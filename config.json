@@ -1,9 +1,14 @@
 {
-  "name": "Aluracord - Matrix (peas)",
+  "name": "Aluracord - Pokémon (JoaoIserhard)",
   "theme": {
     "colors": {
       "primary": {
-        "050": "#E3F9E5",
+        "000": "#EEC643",
+        "005": "#3B4CCA",
+        "010": "#363537",
+        "015": "#DAD2D8",
+        "020": "#A3BAC3",
+        "050": "#E3F9E5", 
         "100": "#C1EAC5",
         "200": "#A3D9A5",
         "300": "#7BC47F",
