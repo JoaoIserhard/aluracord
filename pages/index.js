@@ -22,7 +22,7 @@ function Titulo(props) {
 
 const ImageFallback = (props) => {
   const { src, fallbackSrc, ...rest } = props;
-  const [imgSrc, setImgSrc] = useState(false);
+  const [imgSrc, setImgSrc] = useState(true);
   const [oldSrc, setOldSrc] = useState(src);
   if (oldSrc !== src) {
     setImgSrc(false)
