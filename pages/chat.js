@@ -1,23 +1,14 @@
-import { Box, Text, TextField, Image, Button, Icon } from '@skynexui/components';
-import { createClient } from '@supabase/supabase-js';
+import { Box, TextField, Button } from '@skynexui/components';
 import { useRouter } from 'next/router';
 import React from 'react';
 import appConfig from '../config.json';
 import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
+import { ChatHeader } from '../src/components/ChatHeader';
+import { MessageList } from '../src/components/MessageList'
+import { updateMessages } from '../src/service/updateMessages'
+import { supabaseClient } from '../src/helpers/supabaseClient';
+import { sendMessage } from '../src/service/sendMessage';
 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMwNDI3NSwiZXhwIjoxOTU4ODgwMjc1fQ.3FMPkKznhZmcFjdW0rwVEhTYc63jqkzrMnX9iS3FTh4';
-const SUPABASE_URL = 'https://errkjmfdbwhvplybiwix.supabase.co';
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-
-function updateMessages(addMessage) {
-    return supabaseClient
-        .from('mensagens')
-        .on('INSERT', (response) => {
-            addMessage(response.new);
-        })
-        .subscribe();
-}
 
 export default function ChatPage() {
     const router = useRouter();
@@ -48,17 +39,7 @@ export default function ChatPage() {
         }
     }, []);
 
-    function handleNovaMensagem(newMessage) {
-        const message = {
-            de: userLoggedIn,
-            texto: newMessage,
-        };
 
-        supabaseClient.from('mensagens').insert([message]).then(({ data }) => {
-            console.log(data);
-        })
-        setMessage('');
-    }
 
     return (
         <Box
@@ -81,7 +62,7 @@ export default function ChatPage() {
                     padding: '32px',
                 }}
             >
-                <Header />
+                <ChatHeader/>
                 <Box
                     styleSheet={{
                         position: 'relative',
@@ -94,7 +75,7 @@ export default function ChatPage() {
                         padding: '16px',
                     }}
                 >
-                    <MessageList mensagens={messageList} />
+                    <MessageList messages={messageList} />
                     <Box
                         styleSheet={{
                             display: 'flex',
@@ -119,7 +100,11 @@ export default function ChatPage() {
                                 onKeyPress={(event) => {
                                     if (event.key === 'Enter') {
                                         event.preventDefault();
-                                        handleNovaMensagem(message);
+                                        sendMessage({
+                                            newMessage: message,
+                                            setMessage: setMessage,
+                                            userLoggedIn: userLoggedIn,
+                                        });
                                     }
                                 }}
                                 placeholder="Insira sua message aqui..."
@@ -142,7 +127,11 @@ export default function ChatPage() {
                             size='md'
                             onClick={(event) => {
                                 event.preventDefault();
-                                handleNovaMensagem(message);
+                                sendMessage({
+                                    newMessage: message,
+                                    setMessage: setMessage,
+                                    userLoggedIn: userLoggedIn,
+                                });
                             }}
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.primary["000"],
@@ -153,96 +142,16 @@ export default function ChatPage() {
                         />
                         <ButtonSendSticker
                             onStickerClick={(sticker) => {
-                                handleNovaMensagem(`:sticker:${sticker}`)
+                                sendMessage({
+                                    newMessage: `:sticker:${sticker}`,
+                                    setMessage: setMessage,
+                                    userLoggedIn: userLoggedIn,
+                                })
                             }}
                         />
                     </Box>
                 </Box>
             </Box>
-        </Box>
-    )
-}
-
-function Header() {
-    return (
-        <>
-            <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
-                <Text variant='heading5'>
-                    Chat
-                </Text>
-                <Button
-                    variant='tertiary'
-                    colorVariant='neutral'
-                    label='Logout'
-                    href="/"
-                />
-            </Box>
-        </>
-    )
-}
-
-function MessageList(props) {
-    console.log(props);
-    return (
-        <Box
-            tag="ul"
-            styleSheet={{
-                overflowY: 'scroll',
-                display: 'flex',
-                flexDirection: 'column-reverse',
-                flex: 1,
-                color: appConfig.theme.colors.neutrals["000"],
-                marginBottom: '16px',
-            }}
-        >
-            {props.mensagens.map((message) => {
-                return (
-                    <Text
-                        key={message.id}
-                        tag="li"
-                        styleSheet={{
-                            borderRadius: '5px',
-                            padding: '6px',
-                            marginBottom: '12px',
-                            hover: {
-                                backgroundColor: appConfig.theme.colors.neutrals[700],
-                            }
-                        }}
-                    >
-                        <Box
-                            styleSheet={{
-                                marginBottom: '8px',
-                            }}
-                        >
-                            <Image
-                                styleSheet={{
-                                    width: '20px',
-                                    height: '20px',
-                                    borderRadius: '50%',
-                                    display: 'inline-block',
-                                    marginRight: '8px',
-                                }}
-                                src={`https://github.com/${message.de}.png`}
-                            />
-                            <Text tag="strong">
-                                {message.de}
-                            </Text>
-                            <Text
-                                styleSheet={{
-                                    fontSize: '10px',
-                                    marginLeft: '8px',
-                                    color: appConfig.theme.colors.neutrals[300],
-                                }}
-                                tag="span"
-                            >
-                                {(new Date().toLocaleDateString())}
-                            </Text>
-                        </Box>
-                        {message.texto.startsWith(':sticker:') ?
-                            <Image src={message.texto.replace(':sticker:', '')} /> : message.texto}
-                    </Text>
-                );
-            })}
         </Box>
     )
 }
