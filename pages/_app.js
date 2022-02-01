@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 function GlobalStyle() {
   return (
     <style global jsx>{`
@@ -30,6 +32,11 @@ function GlobalStyle() {
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
+    <Head>
+      <meta charSet="utf-8" />
+      <link rel="icon" href="/favicon.svg"/>
+      <title>PokeChat</title>
+    </Head>
       <GlobalStyle />
       <Component {...pageProps} />
     </>

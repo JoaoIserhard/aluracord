@@ -20,8 +20,7 @@ function Titulo(props) {
   );
 }
 
-const ImageFallback = (props) => {
-  const { src, fallbackSrc, ...rest } = props;
+const ImageFallback = ({ src, fallbackSrc, ...rest }) => {
   const [imgSrc, setImgSrc] = useState(true);
   const [oldSrc, setOldSrc] = useState(src);
   if (oldSrc !== src) {
@@ -86,7 +85,7 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={function (infosDoEvento) {
               infosDoEvento.preventDefault();
-              roteamento.push('/chat')
+              roteamento.push(`/chat?username=${username}`)
             }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
