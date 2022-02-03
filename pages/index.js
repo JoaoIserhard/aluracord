@@ -1,5 +1,8 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 import { useRouter } from 'next/router';
+import { ImageFallback } from '../src/components/ImageFallback';
+
+
 
 import React, { useState } from 'react';
 import appConfig from '../config.json';
@@ -20,23 +23,6 @@ function Titulo(props) {
   );
 }
 
-const ImageFallback = ({ src, fallbackSrc, ...rest }) => {
-  const [imgSrc, setImgSrc] = useState(true);
-  const [oldSrc, setOldSrc] = useState(src);
-  if (oldSrc !== src) {
-    setImgSrc(false)
-    setOldSrc(src)
-  }
-  return (
-    <Image
-      {...rest}
-      src={imgSrc ? fallbackSrc : src}
-      onError={() => {
-        setImgSrc(true);
-      }}
-    />
-  );
-};
 
 export default function PaginaInicial() {
   const [username, setUsername] = React.useState();
@@ -159,7 +145,7 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px'
               }}
-              value={username}
+              username={username}
               src={`https://github.com/${username}.png`}
               fallbackSrc={`https://i.pinimg.com/originals/6f/7d/ac/6f7dac2181f81b083c45dd2df64406de.jpg`}
             />
