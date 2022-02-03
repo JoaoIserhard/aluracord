@@ -8,6 +8,7 @@ import { MessageList } from '../src/components/MessageList'
 import { updateMessages } from '../src/service/updateMessages'
 import { sendMessage } from '../src/service/sendMessage';
 import { loadMessageList } from '../src/service/loadMessageList';
+import { disconectDb } from '../src/helpers/disconnectDb';
 
 
 export default function ChatPage() {
@@ -21,20 +22,10 @@ export default function ChatPage() {
             setMessageList: setMessageList
         })
 
-        const subscription = updateMessages((newMessage) => {
-            setMessageList((currentList) => {
-                return [
-                    newMessage,
-                    ...currentList,
-                ]
-            }
-            )
+        disconectDb({
+            setMessageList: setMessageList
         })
-        return () => {
-            subscription.unsubscribe();
-        }
     }, []);
-
 
 
     return (
