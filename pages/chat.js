@@ -6,8 +6,8 @@ import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 import { ChatHeader } from '../src/components/ChatHeader';
 import { MessageList } from '../src/components/MessageList'
 import { updateMessages } from '../src/service/updateMessages'
-import { supabaseClient } from '../src/helpers/supabaseClient';
 import { sendMessage } from '../src/service/sendMessage';
+import { loadMessageList } from '../src/service/loadMessageList';
 
 
 export default function ChatPage() {
@@ -17,13 +17,9 @@ export default function ChatPage() {
     const [messageList, setMessageList] = React.useState([]);
 
     React.useEffect(() => {
-        supabaseClient
-            .from('mensagens')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .then(({ data }) => {
-                setMessageList(data);
-            });
+        loadMessageList({
+            setMessageList: setMessageList
+        })
 
         const subscription = updateMessages((newMessage) => {
             setMessageList((currentList) => {
