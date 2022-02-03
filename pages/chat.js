@@ -5,6 +5,7 @@ import appConfig from '../config.json';
 import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 import { ChatHeader } from '../src/components/ChatHeader';
 import { MessageList } from '../src/components/MessageList'
+import { updateMessages } from '../src/service/updateMessages'
 import { sendMessage } from '../src/service/sendMessage';
 import { loadMessageList } from '../src/service/loadMessageList';
 import { disconectDb } from '../src/helpers/disconnectDb';
@@ -25,6 +26,7 @@ export default function ChatPage() {
             setMessageList: setMessageList
         })
     }, []);
+
 
     return (
         <Box
@@ -60,7 +62,7 @@ export default function ChatPage() {
                         padding: '16px',
                     }}
                 >
-                    <MessageList messages={messageList} username={message.de}/>
+                    <MessageList messages={messageList} />
                     <Box
                         styleSheet={{
                             display: 'flex',
